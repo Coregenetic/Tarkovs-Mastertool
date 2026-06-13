@@ -1,0 +1,65 @@
+/* ── CSS VARIABLES ──────────────────────── */
+:root {
+  --ac: #e91e8c;
+  --ac-dim: rgba(233, 30, 140, 0.15);
+  --ac-border: rgba(233, 30, 140, 0.3);
+
+  --bg: #111111;
+  --bg2: #181818;
+  --bg3: #1e1e1e;
+  --bg4: #242424;
+
+  --t1: #ffffff;
+  --t2: rgba(255,255,255,0.7);
+  --t3: rgba(255,255,255,0.4);
+  --t4: rgba(255,255,255,0.2);
+
+  --b1: rgba(255,255,255,0.06);
+  --b2: rgba(255,255,255,0.1);
+
+  --r: 10px;
+  --r-sm: 6px;
+  --r-lg: 14px;
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #00d4ff;
+
+  --titlebar-h: 36px;
+  --topbar-h: 48px;
+  --statusbar-h: 24px;
+  --sidebar-w: 200px;
+}
+
+/* ── RESET ───────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+input, textarea { user-select: text; }
+
+/* ── SCROLLBAR ───────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ac); }
+
+/* ── TYPOGRAPHY ─────────────────────────── */
+h1 { font-size: 18px; font-weight: 700; color: var(--t1); }
+h2 { font-size: 15px; font-weight: 600; color: var(--t1); }
+h3 { font-size: 13px; font-weight: 600; color: var(--t2); }
+
+/* ── ANIMATIONS ─────────────────────────── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes spin { to { transform: rotate(360deg); } }

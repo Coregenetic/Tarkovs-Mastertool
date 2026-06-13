@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https://api.tarkov.dev https://player.tarkov.dev https://api.github.com">
+  <title>Tarkov Mastertool</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- TITLEBAR -->
+    <div class="titlebar" id="titlebar">
+      <div class="titlebar-drag">
+        <div class="titlebar-logo">
+          <i class="ti ti-crosshair"></i>
+        </div>
+        <span class="titlebar-title">Tarkov Mastertool</span>
+      </div>
+      <div class="titlebar-controls">
+        <button class="tb-btn" id="btn-minimize" title="Minimieren"><i class="ti ti-minus"></i></button>
+        <button class="tb-btn" id="btn-maximize" title="Maximieren"><i class="ti ti-square"></i></button>
+        <button class="tb-btn danger" id="btn-close" title="Schließen"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+
+    <!-- SHELL -->
+    <div class="shell">
+
+      <!-- SIDEBAR -->
+      <nav class="sidebar" id="sidebar">
+        <div class="sidebar-nav">
+          <button class="nav-btn active" data-page="overview" title="Overview">
+            <i class="ti ti-layout-dashboard"></i>
+            <span>Overview</span>
+          </button>
+          <button class="nav-btn" data-page="flea" title="Flea Market">
+            <i class="ti ti-coin"></i>
+            <span>Flea</span>
+          </button>
+          <button class="nav-btn" data-page="raids" title="Raids">
+            <i class="ti ti-sword"></i>
+            <span>Raids</span>
+          </button>
+          <button class="nav-btn" data-page="quests" title="Quests">
+            <i class="ti ti-checkup-list"></i>
+            <span>Quests</span>
+          </button>
+          <button class="nav-btn" data-page="stats" title="Stats">
+            <i class="ti ti-chart-bar"></i>
+            <span>Stats</span>
+          </button>
+          <button class="nav-btn" data-page="hideout" title="Hideout">
+            <i class="ti ti-home-2"></i>
+            <span>Hideout</span>
+          </button>
+        </div>
+        <div class="sidebar-bottom">
+          <button class="nav-btn" data-page="settings" title="Einstellungen">
+            <i class="ti ti-settings"></i>
+            <span>Settings</span>
+          </button>
+          <div class="sidebar-avatar" id="sidebarAvatar">C</div>
+        </div>
+      </nav>
+
+      <!-- MAIN -->
+      <div class="main">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+          <div class="topbar-left">
+            <h1 class="page-title" id="pageTitle">Overview</h1>
+            <span class="page-date" id="pageDate"></span>
+          </div>
+          <div class="topbar-right">
+            <div class="status-badge" id="statusBadge">
+              <span class="status-dot"></span>
+              <span id="statusText">Verbinde...</span>
+            </div>
+            <div class="gamemode-badge" id="gamemodeBadge">PvE</div>
+            <button class="icon-btn" title="Benachrichtigungen"><i class="ti ti-bell"></i></button>
+          </div>
+        </div>
+
+        <!-- PAGES -->
+        <div class="page-container">
+
+          <div class="page active" id="page-overview">
+            <div class="page-placeholder">
+              <i class="ti ti-layout-dashboard"></i>
+              <p>Overview — Phase 2</p>
+            </div>
+          </div>
+
+          <div class="page" id="page-flea">
+            <div class="page-placeholder">
+              <i class="ti ti-coin"></i>
+              <p>Flea Market — Phase 2</p>
+            </div>
+          </div>
+
+          <div class="page" id="page-raids">
+            <div class="page-placeholder">
+              <i class="ti ti-sword"></i>
+              <p>Raids — Phase 3</p>
+            </div>
+          </div>
+
+          <div class="page" id="page-quests">
+            <div class="page-placeholder">
+              <i class="ti ti-checkup-list"></i>
+              <p>Quests — Phase 3</p>
+            </div>
+          </div>
+
+          <div class="page" id="page-stats">
+            <div class="page-placeholder">
+              <i class="ti ti-chart-bar"></i>
+              <p>Stats — Phase 3</p>
+            </div>
+          </div>
+
+          <div class="page" id="page-hideout">
+            <div class="page-placeholder">
+              <i class="ti ti-home-2"></i>
+              <p>Hideout — Phase 3</p>
+            </div>
+          </div>
+
+          <!-- SETTINGS PAGE -->
+          <div class="page" id="page-settings">
+            <div class="settings-wrap">
+              <h2 class="settings-heading">Einstellungen</h2>
+
+              <div class="settings-section">
+                <div class="settings-label">Profil</div>
+                <div class="settings-row">
+                  <label>Charakter-Name</label>
+                  <input type="text" id="set-playerName" placeholder="z.B. Coregenetic">
+                </div>
+                <div class="settings-row">
+                  <label>Spielmodus</label>
+                  <div class="btn-group" id="gamemodeGroup">
+                    <button class="toggle-btn active" data-mode="pve">PvE</button>
+                    <button class="toggle-btn" data-mode="pvp">PvP</button>
+                    <button class="toggle-btn" data-mode="arena">Arena</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-label">EFT Logs</div>
+                <div class="settings-row">
+                  <label>Log-Pfad</label>
+                  <div class="input-row">
+                    <input type="text" id="set-logPath" placeholder="D:\Battlestate Games\Escape from Tarkov\Logs">
+                    <button class="btn-secondary" id="btn-detectPath">Auto-Detect</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-label">Darstellung</div>
+                <div class="settings-row">
+                  <label>Akzentfarbe</label>
+                  <div class="color-picker" id="colorPicker">
+                    <div class="color-dot active" data-color="#e91e8c" style="background:#e91e8c"></div>
+                    <div class="color-dot" data-color="#7c5cfc" style="background:#7c5cfc"></div>
+                    <div class="color-dot" data-color="#00d4ff" style="background:#00d4ff"></div>
+                    <div class="color-dot" data-color="#10b981" style="background:#10b981"></div>
+                    <div class="color-dot" data-color="#f59e0b" style="background:#f59e0b"></div>
+                    <div class="color-dot" data-color="#ef4444" style="background:#ef4444"></div>
+                  </div>
+                </div>
+                <div class="settings-row">
+                  <label>Sound</label>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="set-sound" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="settings-row">
+                  <label>Sprache</label>
+                  <div class="btn-group" id="languageGroup">
+                    <button class="toggle-btn active" data-lang="de">Deutsch</button>
+                    <button class="toggle-btn" data-lang="en">English</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-label">Cloud Sync (optional)</div>
+                <div class="settings-row">
+                  <label>GitHub PAT</label>
+                  <input type="password" id="set-pat" placeholder="ghp_...">
+                </div>
+                <div class="settings-row">
+                  <label>Gist ID</label>
+                  <input type="text" id="set-gistId" placeholder="abc123...">
+                </div>
+              </div>
+
+              <button class="btn-primary" id="btn-saveSettings">Einstellungen speichern</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- STATUSBAR -->
+        <div class="statusbar">
+          <span class="sb-brand">TARKOV MASTERTOOL</span>
+          <span class="sb-version">v2.0.0</span>
+          <div class="sb-spacer"></div>
+          <span class="sb-info" id="sb-sync">Bereit</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
