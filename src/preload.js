@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('api', {
-  // Window Controls
+  // Window
   minimize: () => ipcRenderer.send('win-minimize'),
   maximize: () => ipcRenderer.send('win-maximize'),
   close:    () => ipcRenderer.send('win-close'),
@@ -10,7 +10,12 @@ contextBridge.exposeInMainWorld('api', {
   getSettings:  () => ipcRenderer.invoke('get-settings'),
   saveSettings: (s) => ipcRenderer.invoke('save-settings', s),
 
-  // Events vom Main-Prozess empfangen
-  on: (channel, fn) => ipcRenderer.on(channel, (_, ...args) => fn(...args)),
-  off: (channel, fn) => ipcRenderer.off(channel, fn),
+  // Data
+  getSales: (limit) => ipcRenderer.invoke('get-sales', limit),
+  getStats: ()      => ipcRenderer.invoke('get-stats'),
+  getDataDir: ()    => ipcRenderer.invoke('get-data-dir'),
+
+  // Events
+  on:  (ch, fn) => ipcRenderer.on(ch, (_, ...args) => fn(...args)),
+  off: (ch, fn) => ipcRenderer.removeListener(ch, fn),
 })
