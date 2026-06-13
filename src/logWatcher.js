@@ -81,22 +81,28 @@ class LogWatcher extends EventEmitter {
     const active = this._findActiveSession()
     if (active && active !== this._sessionDir) {
       this._sessionDir = active
-      this.log(`Neue Session: ${path.basename(active)}`)
+      this.log(`New session: ${path.basename(active)}`)
       this.emit('new-session', { dir: active })
     }
     if (!this._sessionDir) return
 
-    // Neue Sales
+    // Neue Sales aus push-notifications
     const pushFiles = this._getLogsByType(this._sessionDir, 'push-notification')
     for (const f of pushFiles) {
       const known = this._positions[f] || 0
       try {
         const stat = fs.statSync(f)
         if (stat.size <= known) continue
+        this.log(`New data in ${path.basename(f)}: +${stat.size - known} bytes`)
         const sales = this._readNewSales(f, known)
-        if (sales.newSales.length > 0) this.emit('new-sales', sales.newSales)
+        if (sales.newSales.length > 0) {
+          this.log(`Found ${sales.newSales.length} new sale(s)`)
+          this.emit('new-sales', sales.newSales)
+        }
         this._positions[f] = sales.newPos
-      } catch {}
+      } catch(e) {
+        this.log(`Poll error: ${e.message}`)
+      }
     }
   }
 

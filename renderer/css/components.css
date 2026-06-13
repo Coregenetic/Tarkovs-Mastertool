@@ -1141,3 +1141,23 @@
   height: 100%; background: var(--ac);
   border-radius: 2px; transition: width .3s;
 }
+
+/* ── NUMBER INPUTS ───────────────────────── */
+.settings-row input[type="number"] {
+  flex: 1;
+  background: var(--bg4);
+  border: 1px solid var(--b2);
+  border-radius: var(--r-sm);
+  padding: 7px 10px;
+  color: var(--t1);
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color .15s;
+  -moz-appearance: textfield;
+}
+.settings-row input[type="number"]:focus { border-color: var(--ac); }
+.settings-row input[type="number"]::-webkit-outer-spin-button,
+.settings-row input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}

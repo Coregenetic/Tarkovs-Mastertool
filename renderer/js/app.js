@@ -5,17 +5,35 @@ let currentPage = 'overview'
 // ── INIT ──────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   await loadSettings()
+  applyTranslations()
   initNav()
   initTitlebar()
   initDate()
   initSettings()
   applyAccentColor(settings.accentColor || '#e91e8c')
   initFlea()
+
+  // Update Notifications
+  window.api.on('update-available', () => {
+    showToast({ title: 'Update verfügbar', sub: 'Wird im Hintergrund geladen...', tag: 'UPDATE', duration: 5000 })
+  })
+  window.api.on('update-downloaded', () => {
+    showToast({ title: 'Update bereit', sub: 'Klicken zum Installieren', tag: 'UPDATE', duration: 10000, color: '#10b981' })
+    const el = document.getElementById('sb-sync')
+    if (el) {
+      el.innerHTML = '<span style="color:#10b981;cursor:pointer" onclick="window.api.send(\'install-update\')">🔄 Update installieren</span>'
+    }
+  })
   initOverview()
   initQuests()
   initStats()
   initRaids()
   initHideout()
+
+  // Onboarding beim ersten Start
+  if (shouldShowOnboarding()) {
+    setTimeout(() => showOnboarding(), 300)
+  }
 })
 
 // ── SETTINGS LADEN ────────────────────────
@@ -54,6 +72,18 @@ function applySettingsToUI() {
   if (gi) gi.value = settings.gistId      || ''
   if (sn) sn.checked = settings.sound !== false
 
+  // Manuelle Stats
+  const sl = document.getElementById('set-level')
+  const sk = document.getElementById('set-kills')
+  const sp = document.getElementById('set-playtime')
+  const st = document.getElementById('set-totalraids')
+  const ss = document.getElementById('set-survived')
+  if (sl) sl.value = settings.manualLevel    || ''
+  if (sk) sk.value = settings.manualKills    || ''
+  if (sp) sp.value = settings.manualPlaytime || ''
+  if (st) st.value = settings.manualRaids    || ''
+  if (ss) ss.value = settings.manualSurvived || ''
+
   // Gamemode
   document.querySelectorAll('#gamemodeGroup .toggle-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.mode === (settings.gameMode || 'pve'))
@@ -67,6 +97,10 @@ function applySettingsToUI() {
   // Akzentfarbe
   applyAccentColor(settings.accentColor || '#e91e8c')
 
+  // Custom Color Input
+  const cc = document.getElementById('set-customColor')
+  if (cc) cc.value = settings.accentColor || '#e91e8c'
+
   // Gamemode Badge
   const badge = document.getElementById('gamemodeBadge')
   if (badge) badge.textContent = (settings.gameMode || 'pve').toUpperCase()
@@ -74,6 +108,16 @@ function applySettingsToUI() {
   // Avatar
   const av = document.getElementById('sidebarAvatar')
   if (av) av.textContent = (settings.playerName || 'C')[0].toUpperCase()
+}
+
+function applyCustomColor(color) {
+  applyAccentColor(color)
+  settings.accentColor = color
+  // Color Dots alle deaktivieren
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'))
+  // Custom Color Input updaten
+  const cc = document.getElementById('set-customColor')
+  if (cc) cc.value = color
 }
 
 // ── AKZENTFARBE ───────────────────────────
@@ -109,7 +153,7 @@ function showPage(name) {
   if (currentPage === name) return
   currentPage = name
 
-  // Alle Seiten ausblenden
+  // All Seiten ausblenden
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'))
 
@@ -184,6 +228,7 @@ function initSettings() {
       document.querySelectorAll('#languageGroup .toggle-btn').forEach(b => b.classList.remove('active'))
       btn.classList.add('active')
       settings.language = btn.dataset.lang
+      applyTranslations()
     })
   })
 
@@ -205,19 +250,32 @@ function initSettings() {
 
   // Speichern
   document.getElementById('btn-saveSettings')?.addEventListener('click', async () => {
-    settings.playerName  = document.getElementById('set-playerName')?.value  || ''
-    settings.logPath     = document.getElementById('set-logPath')?.value     || ''
-    settings.pat         = document.getElementById('set-pat')?.value         || ''
-    settings.gistId      = document.getElementById('set-gistId')?.value      || ''
-    settings.sound       = document.getElementById('set-sound')?.checked     ?? true
+    settings.playerName     = document.getElementById('set-playerName')?.value  || ''
+    settings.logPath        = document.getElementById('set-logPath')?.value     || ''
+    settings.pat            = document.getElementById('set-pat')?.value         || ''
+    settings.gistId         = document.getElementById('set-gistId')?.value      || ''
+    settings.sound          = document.getElementById('set-sound')?.checked     ?? true
+    settings.manualLevel    = parseInt(document.getElementById('set-level')?.value)      || 0
+    settings.manualKills    = parseInt(document.getElementById('set-kills')?.value)      || 0
+    settings.manualPlaytime = parseInt(document.getElementById('set-playtime')?.value)   || 0
+    settings.manualRaids    = parseInt(document.getElementById('set-totalraids')?.value) || 0
+    settings.manualSurvived = parseInt(document.getElementById('set-survived')?.value)   || 0
 
     try {
       await window.api.saveSettings(settings)
       applySettingsToUI()
+      applyTranslations()
+
+      const prevLang = settings.language
+      // Wenn Sprache geändert → neu laden
+      if (settings.language !== prevLang) {
+        setTimeout(() => window.location.reload(), 500)
+        return
+      }
 
       const btn = document.getElementById('btn-saveSettings')
       const orig = btn.textContent
-      btn.textContent = '✓ Gespeichert!'
+      btn.textContent = '✓ Saved!'
       btn.style.background = 'var(--success)'
       setTimeout(() => {
         btn.textContent = orig

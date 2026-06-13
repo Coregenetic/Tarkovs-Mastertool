@@ -1,7 +1,8 @@
-const { app, BrowserWindow, ipcMain, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, Tray, Menu, nativeImage } = require('electron')
 const path = require('path')
 const fs   = require('fs')
 const Store = require('electron-store')
+const { autoUpdater } = require('electron-updater')
 
 const store      = new Store()
 const logWatcher  = require('./logWatcher')
@@ -12,10 +13,42 @@ const isDev  = process.argv.includes('--dev')
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
 
 let mainWindow
+let tray = null
 
 // ── Setup ────────────────────────────────
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true })
+}
+
+function createTray() {
+  // Einfaches Icon aus Text generieren falls kein Icon vorhanden
+  const iconPath = path.join(__dirname, '../assets/icon.ico')
+  const icon = fs.existsSync(iconPath)
+    ? nativeImage.createFromPath(iconPath).resize({ width: 16, height: 16 })
+    : nativeImage.createEmpty()
+
+  tray = new Tray(icon)
+  tray.setToolTip('Tarkov Mastertool')
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Open Tarkov Mastertool',
+      click: () => { mainWindow?.show(); mainWindow?.focus() }
+    },
+    { type: 'separator' },
+    {
+      label: 'Quit',
+      click: () => { app.isQuitting = true; app.quit() }
+    }
+  ])
+
+  tray.setContextMenu(contextMenu)
+
+  // Doppelklick → Fenster öffnen
+  tray.on('double-click', () => {
+    mainWindow?.show()
+    mainWindow?.focus()
+  })
 }
 
 function createWindow() {
@@ -33,6 +66,19 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   if (isDev) mainWindow.webContents.openDevTools({ mode: 'detach' })
+
+  // Minimize to Tray statt schließen
+  mainWindow.on('close', (e) => {
+    if (!app.isQuitting) {
+      e.preventDefault()
+      mainWindow.hide()
+      tray?.displayBalloon?.({
+        title: 'Tarkov Mastertool',
+        content: 'Still running in the background. Double-click the tray icon to open.',
+        iconType: 'info',
+      })
+    }
+  })
 }
 
 // ── App Ready ────────────────────────────
@@ -40,6 +86,18 @@ app.whenReady().then(() => {
   ensureDataDir()
   saleStore.init(DATA_DIR)
   createWindow()
+  createTray()
+
+  // Auto-Update (nur in Production)
+  if (!isDev) {
+    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.on('update-available', () => {
+      mainWindow?.webContents.send('update-available')
+    })
+    autoUpdater.on('update-downloaded', () => {
+      mainWindow?.webContents.send('update-downloaded')
+    })
+  }
 
   // LogWatcher Events
   logWatcher.setDataDir(DATA_DIR)
@@ -103,9 +161,18 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
+  // Nicht beenden — im Tray weiterlaufen
+  if (process.platform !== 'darwin' && app.isQuitting) {
+    logWatcher.stop()
+    saleStore.save()
+    app.quit()
+  }
+})
+
+app.on('before-quit', () => {
+  app.isQuitting = true
   logWatcher.stop()
   saleStore.save()
-  if (process.platform !== 'darwin') app.quit()
 })
 
 // ── Window Controls ──────────────────────
@@ -204,4 +271,30 @@ ipcMain.handle('save-hideout-cache', (_, data) => {
   const p = path.join(DATA_DIR, 'hideout_cache.json')
   fs.writeFileSync(p, JSON.stringify(data, null, 2))
   return true
+})
+
+ipcMain.handle('detect-log-path', (_, candidates) => {
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(p)) return p
+    } catch {}
+  }
+  // Registry versuchen
+  try {
+    const { execSync } = require('child_process')
+    const reg = execSync(
+      'reg query "HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\EscapeFromTarkov" /v InstallLocation',
+      { encoding: 'utf8', timeout: 3000 }
+    )
+    const match = reg.match(/InstallLocation\s+REG_SZ\s+(.+)/)
+    if (match) {
+      const logPath = path.join(match[1].trim(), 'Logs')
+      if (fs.existsSync(logPath)) return logPath
+    }
+  } catch {}
+  return null
+})
+
+ipcMain.on('install-update', () => {
+  autoUpdater.quitAndInstall()
 })

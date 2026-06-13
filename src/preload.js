@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('api', {
   // Data
   getSales: (limit) => ipcRenderer.invoke('get-sales', limit),
   getStats: ()      => ipcRenderer.invoke('get-stats'),
+  detectLogPath:        (c)   => ipcRenderer.invoke('detect-log-path', c),
   saveRaid:             (r)   => ipcRenderer.invoke('save-raid', r),
   getRaids:             ()    => ipcRenderer.invoke('get-raids'),
   getHideoutProgress:   ()    => ipcRenderer.invoke('get-hideout-progress'),
@@ -26,6 +27,7 @@ contextBridge.exposeInMainWorld('api', {
   getDataDir: ()    => ipcRenderer.invoke('get-data-dir'),
 
   // Events
-  on:  (ch, fn) => ipcRenderer.on(ch, (_, ...args) => fn(...args)),
-  off: (ch, fn) => ipcRenderer.removeListener(ch, fn),
+  on:   (ch, fn) => ipcRenderer.on(ch, (_, ...args) => fn(...args)),
+  off:  (ch, fn) => ipcRenderer.removeListener(ch, fn),
+  send: (ch)     => ipcRenderer.send(ch),
 })

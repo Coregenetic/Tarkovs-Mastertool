@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,9 +23,9 @@
         <span class="titlebar-title">Tarkov Mastertool</span>
       </div>
       <div class="titlebar-controls">
-        <button class="tb-btn" id="btn-minimize" title="Minimieren"><i class="ti ti-minus"></i></button>
-        <button class="tb-btn" id="btn-maximize" title="Maximieren"><i class="ti ti-square"></i></button>
-        <button class="tb-btn danger" id="btn-close" title="Schließen"><i class="ti ti-x"></i></button>
+        <button class="tb-btn" id="btn-minimize" title="Minimize"><i class="ti ti-minus"></i></button>
+        <button class="tb-btn" id="btn-maximize" title="Maximize"><i class="ti ti-square"></i></button>
+        <button class="tb-btn danger" id="btn-close" title="Close"><i class="ti ti-x"></i></button>
       </div>
     </div>
 
@@ -37,33 +37,33 @@
         <div class="sidebar-nav">
           <button class="nav-btn active" data-page="overview" title="Overview">
             <i class="ti ti-layout-dashboard"></i>
-            <span>Overview</span>
+            <span data-i18n="nav_overview">Overview</span>
           </button>
           <button class="nav-btn" data-page="flea" title="Flea Market">
             <i class="ti ti-coin"></i>
-            <span>Flea</span>
+            <span data-i18n="nav_flea">Flea</span>
           </button>
           <button class="nav-btn" data-page="raids" title="Raids">
             <i class="ti ti-sword"></i>
-            <span>Raids</span>
+            <span data-i18n="nav_raids">Raids</span>
           </button>
           <button class="nav-btn" data-page="quests" title="Quests">
             <i class="ti ti-checkup-list"></i>
-            <span>Quests</span>
+            <span data-i18n="nav_quests">Quests</span>
           </button>
           <button class="nav-btn" data-page="stats" title="Stats">
             <i class="ti ti-chart-bar"></i>
-            <span>Stats</span>
+            <span data-i18n="nav_stats">Stats</span>
           </button>
           <button class="nav-btn" data-page="hideout" title="Hideout">
             <i class="ti ti-home-2"></i>
-            <span>Hideout</span>
+            <span data-i18n="nav_hideout">Hideout</span>
           </button>
         </div>
         <div class="sidebar-bottom">
-          <button class="nav-btn" data-page="settings" title="Einstellungen">
+          <button class="nav-btn" data-page="settings" title="Settings">
             <i class="ti ti-settings"></i>
-            <span>Settings</span>
+            <span data-i18n="nav_settings" data-i18n="settings_title">Settings</span>
           </button>
           <div class="sidebar-avatar" id="sidebarAvatar">C</div>
         </div>
@@ -81,7 +81,7 @@
           <div class="topbar-right">
             <div class="status-badge" id="statusBadge">
               <span class="status-dot"></span>
-              <span id="statusText">Verbinde...</span>
+              <span id="statusText"><span data-i18n="connecting" id="statusText" data-i18n="connecting">Connecting...</span/span></span>
             </div>
             <div class="gamemode-badge" id="gamemodeBadge">PvE</div>
             <button class="icon-btn" title="Benachrichtigungen"><i class="ti ti-bell"></i></button>
@@ -94,7 +94,7 @@
           <div class="page active" id="page-overview">
             <div class="page-placeholder">
               <i class="ti ti-layout-dashboard"></i>
-              <p>Lade...</p>
+              <p>Loading...</p>
             </div>
           </div>
 
@@ -104,8 +104,8 @@
             <div id="flea-splash" class="splash" style="display:none">
               <div class="splash-inner">
                 <div class="splash-icon"><i class="ti ti-coin"></i></div>
-                <div class="splash-title">Lade Flea Daten...</div>
-                <div class="splash-status">Initialisiere...</div>
+                <div class="splash-title" data-i18n="flea_loading">Loading Flea Data...</div>
+                <div class="splash-status" data-i18n="flea_init">Initializing...</div>
                 <div class="splash-bar"><div class="splash-bar-fill" style="width:0%"></div></div>
                 <div class="splash-count"></div>
               </div>
@@ -152,8 +152,8 @@
               <div class="flea-chart-card">
                 <div class="card-header">
                   <div>
-                    <span class="card-title">Einnahmen — letzte 7 Tage</span>
-                    <div class="card-sub">Tagesumsatz in ₽</div>
+                    <span class="card-title">Revenue — last 7 days</span>
+                    <div class="card-sub">Daily revenue in ₽</div>
                   </div>
                   <div class="chart-range-btns">
                     <button class="range-btn active" data-range="7">7T</button>
@@ -172,11 +172,11 @@
               <div class="flea-sales-card">
                 <div class="card-header">
                   <span class="card-title">Verkäufe</span>
-                  <input type="search" class="search-input" placeholder="Item suchen..."
+                  <input type="search" class="search-input" placeholder="Search item..."
                     oninput="setFleaSearch(this.value)" id="flea-search">
                 </div>
                 <div class="sales-list" id="flea-sales-list">
-                  <div class="list-empty"><i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Lade...</div>
+                  <div class="list-empty"><i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Loading...</div>
                 </div>
                 <div class="pagination" id="flea-pagination"></div>
               </div>
@@ -187,44 +187,44 @@
           <div class="page" id="page-raids">
             <div class="q-loading">
               <i class="ti ti-sword" style="font-size:40px;color:var(--t4)"></i>
-              <div>Warte auf Raid-Daten...</div>
+              <div>Waiting for raid data...</div>
             </div>
           </div>
 
           <div class="page" id="page-quests">
             <div class="q-loading">
               <i class="ti ti-checkup-list" style="font-size:40px;color:var(--t4)"></i>
-              <div>Quests werden geladen...</div>
+              <div>Loading Quests...</div>
             </div>
           </div>
 
           <div class="page" id="page-stats">
             <div class="q-loading">
               <i class="ti ti-chart-bar" style="font-size:40px;color:var(--t4)"></i>
-              <div>Stats werden geladen...</div>
+              <div>Loading Stats...</div>
             </div>
           </div>
 
           <div class="page" id="page-hideout">
             <div class="q-loading">
               <i class="ti ti-home-2" style="font-size:40px;color:var(--t4)"></i>
-              <div>Hideout wird geladen...</div>
+              <div>Loading Hideout...</div>
             </div>
           </div>
 
           <!-- SETTINGS PAGE -->
           <div class="page" id="page-settings">
             <div class="settings-wrap">
-              <h2 class="settings-heading">Einstellungen</h2>
+              <h2 class="settings-heading" data-i18n="settings_title">Settings</h2>
 
               <div class="settings-section">
-                <div class="settings-label">Profil</div>
+                <div class="settings-label" data-i18n="settings_profile">Profile</div>
                 <div class="settings-row">
-                  <label>Charakter-Name</label>
-                  <input type="text" id="set-playerName" placeholder="z.B. Coregenetic">
+                  <label data-i18n="settings_name">Character Name</label>
+                  <input type="text" id="set-playerName" placeholder="e.g. Coregenetic">
                 </div>
                 <div class="settings-row">
-                  <label>Spielmodus</label>
+                  <label data-i18n="settings_gamemode">Game Mode</label>
                   <div class="btn-group" id="gamemodeGroup">
                     <button class="toggle-btn active" data-mode="pve">PvE</button>
                     <button class="toggle-btn" data-mode="pvp">PvP</button>
@@ -234,9 +234,9 @@
               </div>
 
               <div class="settings-section">
-                <div class="settings-label">EFT Logs</div>
+                <div class="settings-label" data-i18n="settings_logs">EFT Logs</div>
                 <div class="settings-row">
-                  <label>Log-Pfad</label>
+                  <label data-i18n="settings_logpath">Log Path</label>
                   <div class="input-row">
                     <input type="text" id="set-logPath" placeholder="D:\Battlestate Games\Escape from Tarkov\Logs">
                     <button class="btn-secondary" id="btn-detectPath">Auto-Detect</button>
@@ -245,36 +245,69 @@
               </div>
 
               <div class="settings-section">
-                <div class="settings-label">Darstellung</div>
+                <div class="settings-label" data-i18n="settings_manual">Manual Stats (Initial)</div>
                 <div class="settings-row">
-                  <label>Akzentfarbe</label>
-                  <div class="color-picker" id="colorPicker">
-                    <div class="color-dot active" data-color="#e91e8c" style="background:#e91e8c"></div>
-                    <div class="color-dot" data-color="#7c5cfc" style="background:#7c5cfc"></div>
-                    <div class="color-dot" data-color="#00d4ff" style="background:#00d4ff"></div>
-                    <div class="color-dot" data-color="#10b981" style="background:#10b981"></div>
-                    <div class="color-dot" data-color="#f59e0b" style="background:#f59e0b"></div>
-                    <div class="color-dot" data-color="#ef4444" style="background:#ef4444"></div>
+                  <label>Level</label>
+                  <input type="number" id="set-level" placeholder="e.g. 42" min="1" max="100">
+                </div>
+                <div class="settings-row">
+                  <label>Kills</label>
+                  <input type="number" id="set-kills" placeholder="e.g. 1500" min="0">
+                </div>
+                <div class="settings-row">
+                  <label data-i18n="settings_playtime">Play Time (hours)</label>
+                  <input type="number" id="set-playtime" placeholder="e.g. 800" min="0">
+                </div>
+                <div class="settings-row">
+                  <label data-i18n="settings_totalraids">Total Raids</label>
+                  <input type="number" id="set-totalraids" placeholder="e.g. 1247" min="0">
+                </div>
+                <div class="settings-row">
+                  <label>Survived</label>
+                  <input type="number" id="set-survived" placeholder="e.g. 798" min="0">
+                </div>
+              </div>
+
+              <div class="settings-section">
+                <div class="settings-label" data-i18n="settings_display">Appearance</div>
+                <div class="settings-row">
+                  <label data-i18n="settings_accent">Accent Color</label>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <div class="color-picker" id="colorPicker">
+                      <div class="color-dot active" data-color="#e91e8c" style="background:#e91e8c"></div>
+                      <div class="color-dot" data-color="#7c5cfc" style="background:#7c5cfc"></div>
+                      <div class="color-dot" data-color="#00d4ff" style="background:#00d4ff"></div>
+                      <div class="color-dot" data-color="#10b981" style="background:#10b981"></div>
+                      <div class="color-dot" data-color="#f59e0b" style="background:#f59e0b"></div>
+                      <div class="color-dot" data-color="#ef4444" style="background:#ef4444"></div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <input type="color" id="set-customColor" value="#e91e8c"
+                        style="width:28px;height:28px;border:none;border-radius:50%;cursor:pointer;
+                        background:transparent;padding:0;outline:none"
+                        oninput="applyCustomColor(this.value)">
+                      <span style="font-size:11px;color:var(--t4)">Custom</span>
+                    </div>
                   </div>
                 </div>
                 <div class="settings-row">
-                  <label>Sound</label>
+                  <label data-i18n="settings_sound">Sound</label>
                   <label class="toggle-switch">
                     <input type="checkbox" id="set-sound" checked>
                     <span class="toggle-track"></span>
                   </label>
                 </div>
                 <div class="settings-row">
-                  <label>Sprache</label>
+                  <label data-i18n="settings_language">Language</label>
                   <div class="btn-group" id="languageGroup">
-                    <button class="toggle-btn active" data-lang="de">Deutsch</button>
-                    <button class="toggle-btn" data-lang="en">English</button>
+                    <button class="toggle-btn" data-lang="de">Deutsch</button>
+                    <button class="toggle-btn active" data-lang="en">English</button>
                   </div>
                 </div>
               </div>
 
               <div class="settings-section">
-                <div class="settings-label">Cloud Sync (optional)</div>
+                <div class="settings-label" data-i18n="settings_sync">Cloud Sync (optional)</div>
                 <div class="settings-row">
                   <label>GitHub PAT</label>
                   <input type="password" id="set-pat" placeholder="ghp_...">
@@ -285,7 +318,7 @@
                 </div>
               </div>
 
-              <button class="btn-primary" id="btn-saveSettings">Einstellungen speichern</button>
+              <button class="btn-primary" id="btn-saveSettings" data-i18n="settings_save">Save Settings</button>
             </div>
           </div>
 
@@ -296,7 +329,7 @@
           <span class="sb-brand">TARKOV MASTERTOOL</span>
           <span class="sb-version">v2.0.0</span>
           <div class="sb-spacer"></div>
-          <span class="sb-info" id="sb-sync">Bereit</span>
+          <span class="sb-info" id="sb-sync" data-i18n="sb_ready">Ready</span>
         </div>
 
       </div>
@@ -304,7 +337,9 @@
   </div>
 
   <script src="js/toast.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/landing.js"></script>
+  <script src="js/onboarding.js"></script>
   <script src="js/overview.js"></script>
   <script src="js/flea.js"></script>
   <script src="js/quests.js"></script>
