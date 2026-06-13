@@ -13,6 +13,12 @@ contextBridge.exposeInMainWorld('api', {
   // Data
   getSales: (limit) => ipcRenderer.invoke('get-sales', limit),
   getStats: ()      => ipcRenderer.invoke('get-stats'),
+  saveRaid:             (r)   => ipcRenderer.invoke('save-raid', r),
+  getRaids:             ()    => ipcRenderer.invoke('get-raids'),
+  getHideoutProgress:   ()    => ipcRenderer.invoke('get-hideout-progress'),
+  saveHideoutProgress:  (d)   => ipcRenderer.invoke('save-hideout-progress', d),
+  getHideoutCache:      ()    => ipcRenderer.invoke('get-hideout-cache'),
+  saveHideoutCache:     (d)   => ipcRenderer.invoke('save-hideout-cache', d),
   getQuestProgress:  () => ipcRenderer.invoke('get-quest-progress'),
   saveQuestProgress: (ids)  => ipcRenderer.invoke('save-quest-progress', ids),
   getQuestCache:     ()     => ipcRenderer.invoke('get-quest-cache'),

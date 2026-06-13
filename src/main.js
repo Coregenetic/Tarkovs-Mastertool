@@ -4,8 +4,9 @@ const fs   = require('fs')
 const Store = require('electron-store')
 
 const store      = new Store()
-const logWatcher = require('./logWatcher')
-const saleStore  = require('./saleStore')
+const logWatcher  = require('./logWatcher')
+const saleStore   = require('./saleStore')
+const raidWatcher = require('./raidWatcher')
 
 const isDev  = process.argv.includes('--dev')
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
@@ -84,11 +85,21 @@ app.whenReady().then(() => {
     mainWindow?.webContents.send('log', msg)
   })
 
-  // Settings laden und LogWatcher starten
+  // Settings laden und LogWatcher + RaidWatcher starten
   const settings = store.get('settings', {})
   if (settings.logPath) {
     logWatcher.start(settings.logPath)
+    raidWatcher.start(settings.logPath)
   }
+
+  // RaidWatcher Events
+  raidWatcher.on('raid-start', (raid) => {
+    mainWindow?.webContents.send('raid-start', raid)
+  })
+
+  raidWatcher.on('raid-status-request', (raid) => {
+    mainWindow?.webContents.send('raid-status-request', raid)
+  })
 })
 
 app.on('window-all-closed', () => {
@@ -154,6 +165,43 @@ ipcMain.handle('get-quest-cache', () => {
 
 ipcMain.handle('save-quest-cache', (_, data) => {
   const p = path.join(DATA_DIR, 'quest_cache.json')
+  fs.writeFileSync(p, JSON.stringify(data, null, 2))
+  return true
+})
+
+ipcMain.handle('save-raid', (_, raid) => {
+  const p = path.join(DATA_DIR, 'raid_data.json')
+  let raids = []
+  try { raids = JSON.parse(fs.readFileSync(p, 'utf8')) } catch {}
+  raids.unshift(raid)
+  if (raids.length > 1000) raids = raids.slice(0, 1000)
+  fs.writeFileSync(p, JSON.stringify(raids, null, 2))
+  return true
+})
+
+ipcMain.handle('get-raids', () => {
+  const p = path.join(DATA_DIR, 'raid_data.json')
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')) } catch { return [] }
+})
+
+ipcMain.handle('get-hideout-progress', () => {
+  const p = path.join(DATA_DIR, 'hideout_progress.json')
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')) } catch { return {} }
+})
+
+ipcMain.handle('save-hideout-progress', (_, data) => {
+  const p = path.join(DATA_DIR, 'hideout_progress.json')
+  fs.writeFileSync(p, JSON.stringify(data, null, 2))
+  return true
+})
+
+ipcMain.handle('get-hideout-cache', () => {
+  const p = path.join(DATA_DIR, 'hideout_cache.json')
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')) } catch { return [] }
+})
+
+ipcMain.handle('save-hideout-cache', (_, data) => {
+  const p = path.join(DATA_DIR, 'hideout_cache.json')
   fs.writeFileSync(p, JSON.stringify(data, null, 2))
   return true
 })

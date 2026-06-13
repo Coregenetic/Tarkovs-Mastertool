@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   initFlea()
   initOverview()
   initQuests()
+  initStats()
+  initRaids()
+  initHideout()
 })
 
 // ── SETTINGS LADEN ────────────────────────
@@ -36,15 +39,19 @@ async function loadSettings() {
 function applySettingsToUI() {
   // Inputs befüllen
   const pn = document.getElementById('set-playerName')
+  const ai = document.getElementById('set-accountId')
+  const pt = document.getElementById('set-playerToken')
   const lp = document.getElementById('set-logPath')
-  const pt = document.getElementById('set-pat')
+  const pa = document.getElementById('set-pat')
   const gi = document.getElementById('set-gistId')
   const sn = document.getElementById('set-sound')
 
-  if (pn) pn.value = settings.playerName || ''
-  if (lp) lp.value = settings.logPath || ''
-  if (pt) pt.value = settings.pat || ''
-  if (gi) gi.value = settings.gistId || ''
+  if (pn) pn.value = settings.playerName  || ''
+  if (ai) ai.value = settings.accountId   || ''
+  if (pt) pt.value = settings.playerToken || ''
+  if (lp) lp.value = settings.logPath     || ''
+  if (pa) pa.value = settings.pat         || ''
+  if (gi) gi.value = settings.gistId      || ''
   if (sn) sn.checked = settings.sound !== false
 
   // Gamemode
@@ -118,7 +125,10 @@ function showPage(name) {
 
   // Tab-spezifische Aktionen
   if (name === 'overview') renderOverview()
-  if (name === 'quests') { fetchQuests(); renderQuests() }
+  if (name === 'quests')  { fetchQuests(); renderQuests() }
+  if (name === 'stats')   renderStats()
+  if (name === 'raids')   renderRaids()
+  if (name === 'hideout') renderHideout()
   if (name === 'flea' && typeof fleaStats !== 'undefined' && fleaStats) {
     setTimeout(() => renderWeekChart(fleaStats.daily || [], fleaChartRange), 50)
   }
@@ -195,11 +205,11 @@ function initSettings() {
 
   // Speichern
   document.getElementById('btn-saveSettings')?.addEventListener('click', async () => {
-    settings.playerName = document.getElementById('set-playerName')?.value || ''
-    settings.logPath    = document.getElementById('set-logPath')?.value || ''
-    settings.pat        = document.getElementById('set-pat')?.value || ''
-    settings.gistId     = document.getElementById('set-gistId')?.value || ''
-    settings.sound      = document.getElementById('set-sound')?.checked ?? true
+    settings.playerName  = document.getElementById('set-playerName')?.value  || ''
+    settings.logPath     = document.getElementById('set-logPath')?.value     || ''
+    settings.pat         = document.getElementById('set-pat')?.value         || ''
+    settings.gistId      = document.getElementById('set-gistId')?.value      || ''
+    settings.sound       = document.getElementById('set-sound')?.checked     ?? true
 
     try {
       await window.api.saveSettings(settings)

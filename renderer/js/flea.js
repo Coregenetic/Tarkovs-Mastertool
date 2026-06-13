@@ -59,7 +59,9 @@ async function loadFleaData() {
           const today = new Date().toISOString().slice(0, 10)
           drawOvChart(last7, today)
         }
-      }, 150)
+        // Landing Modal anzeigen
+        if (typeof showLanding === 'function') showLanding()
+      }, 200)
       fetchMissingThumbnails()
     }
   } catch(e) { console.error('loadFleaData:', e) }
