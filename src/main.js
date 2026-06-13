@@ -136,4 +136,24 @@ ipcMain.handle('get-stats', () => {
   return saleStore.buildStats()
 })
 
-ipcMain.handle('get-data-dir', () => DATA_DIR)
+ipcMain.handle('get-quest-progress', () => {
+  const p = path.join(DATA_DIR, 'quest_manual.json')
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')) } catch { return [] }
+})
+
+ipcMain.handle('save-quest-progress', (_, ids) => {
+  const p = path.join(DATA_DIR, 'quest_manual.json')
+  fs.writeFileSync(p, JSON.stringify(ids, null, 2))
+  return true
+})
+
+ipcMain.handle('get-quest-cache', () => {
+  const p = path.join(DATA_DIR, 'quest_cache.json')
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')) } catch { return [] }
+})
+
+ipcMain.handle('save-quest-cache', (_, data) => {
+  const p = path.join(DATA_DIR, 'quest_cache.json')
+  fs.writeFileSync(p, JSON.stringify(data, null, 2))
+  return true
+})

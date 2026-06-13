@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   initSettings()
   applyAccentColor(settings.accentColor || '#e91e8c')
   initFlea()
+  initOverview()
+  initQuests()
 })
 
 // ── SETTINGS LADEN ────────────────────────
@@ -115,6 +117,8 @@ function showPage(name) {
   if (title) title.textContent = PAGE_TITLES[name] || name
 
   // Tab-spezifische Aktionen
+  if (name === 'overview') renderOverview()
+  if (name === 'quests') { fetchQuests(); renderQuests() }
   if (name === 'flea' && typeof fleaStats !== 'undefined' && fleaStats) {
     setTimeout(() => renderWeekChart(fleaStats.daily || [], fleaChartRange), 50)
   }

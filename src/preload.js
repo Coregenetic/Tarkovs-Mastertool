@@ -13,6 +13,10 @@ contextBridge.exposeInMainWorld('api', {
   // Data
   getSales: (limit) => ipcRenderer.invoke('get-sales', limit),
   getStats: ()      => ipcRenderer.invoke('get-stats'),
+  getQuestProgress:  () => ipcRenderer.invoke('get-quest-progress'),
+  saveQuestProgress: (ids)  => ipcRenderer.invoke('save-quest-progress', ids),
+  getQuestCache:     ()     => ipcRenderer.invoke('get-quest-cache'),
+  saveQuestCache:    (data) => ipcRenderer.invoke('save-quest-cache', data),
   getDataDir: ()    => ipcRenderer.invoke('get-data-dir'),
 
   // Events

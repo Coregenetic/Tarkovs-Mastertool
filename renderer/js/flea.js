@@ -15,6 +15,8 @@ function initFlea() {
     fleaStats = data.stats || null
     hideSplash()
     renderFlea()
+    if (typeof renderOverview === 'function') renderOverview()
+    setTimeout(() => renderWeekChart(fleaStats?.daily || [], fleaChartRange), 100)
     fetchMissingThumbnails()
   })
   window.api.on('new-sales', (data) => {
@@ -49,7 +51,15 @@ async function loadFleaData() {
     if (fleaSales.length > 0 || fleaStats) {
       hideSplash()
       renderFlea()
-      setTimeout(() => renderWeekChart(fleaStats?.daily || [], fleaChartRange), 100)
+      if (typeof renderOverview === 'function') renderOverview()
+      setTimeout(() => {
+        renderWeekChart(fleaStats?.daily || [], fleaChartRange)
+        if (typeof drawOvChart === 'function') {
+          const last7 = (fleaStats?.daily || []).slice(0, 7).reverse()
+          const today = new Date().toISOString().slice(0, 10)
+          drawOvChart(last7, today)
+        }
+      }, 150)
       fetchMissingThumbnails()
     }
   } catch(e) { console.error('loadFleaData:', e) }

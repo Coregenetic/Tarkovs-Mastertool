@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https://api.tarkov.dev https://player.tarkov.dev https://api.github.com">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https://api.tarkov.dev https://player.tarkov.dev https://api.github.com https://gist.github.com">
   <title>Tarkov Mastertool</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
@@ -94,7 +94,7 @@
           <div class="page active" id="page-overview">
             <div class="page-placeholder">
               <i class="ti ti-layout-dashboard"></i>
-              <p>Overview — Phase 2</p>
+              <p>Lade...</p>
             </div>
           </div>
 
@@ -192,9 +192,9 @@
           </div>
 
           <div class="page" id="page-quests">
-            <div class="page-placeholder">
-              <i class="ti ti-checkup-list"></i>
-              <p>Quests — Phase 3</p>
+            <div class="q-loading">
+              <i class="ti ti-checkup-list" style="font-size:40px;color:var(--t4)"></i>
+              <div>Quests werden geladen...</div>
             </div>
           </div>
 
@@ -304,7 +304,9 @@
   </div>
 
   <script src="js/toast.js"></script>
+  <script src="js/overview.js"></script>
   <script src="js/flea.js"></script>
+  <script src="js/quests.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
